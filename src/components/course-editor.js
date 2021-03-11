@@ -1,116 +1,58 @@
-import React from 'react'
-import {Link} from "react-router-dom";
+import React, {useState, useEffect} from 'react'
+import {Link, useParams} from "react-router-dom";
+import moduleReducer from "../reducers/modules-reducer";
+import lessonReducer from "../reducers/lesson-reducer";
+import {combineReducers, createStore} from "redux";
+import {Provider} from "react-redux";
+import ModuleList from "./module-list";
+import LessonTabs from "./lesson-tabs";
+import TopicPills from "./course-editor/topic-pills";
+import topicReducer from "../reducers/topic-reducer";
+import courseService from "../services/course-service";
 
-// const CourseEditor = ({props}) =>
-const CourseEditor = ({history}) =>
-    <div>
-      <h2>
-        <Link to="/courses/table">
-          <i className="fas fa-arrow-left"></i>
-        </Link>
-        Course Editor
-        {/*<i onClick={() => props.history.goBack()}*/}
-        {/*   className="fas fa-times float-right"></i>*/}
-      </h2>
-      <div className="container">
+const reducer = combineReducers({
+  moduleReducer: moduleReducer,
+  lessonReducer: lessonReducer,
+  topicReducer: topicReducer
+})
 
-        <div className="row">
-          <div className="col-4">
+// const store = createStore(moduleReducer)
+// const store = createStore(lessonReducer)
+const store = createStore(reducer)
 
-            <ul className="list-group">
-              <li className="list-group-item active">
-                Module 1
-                <i className="pull-right fa fa-trash"></i>
-              </li>
-              <li className="list-group-item">
-                Module 2
-                <i className="pull-right fa fa-trash"></i>
-              </li>
-              <li className="list-group-item">
-                Module 3
-                <i className="pull-right fa fa-trash"></i>
-              </li>
-              <li className="list-group-item">
-                Module 4
-                <i className="pull-right fa fa-trash"></i>
-              </li>
-              <li className="list-group-item">
-                Module 5
-                <i className="pull-right fa fa-trash"></i>
-              </li>
-              <li className="list-group-item">
-                Module 6
-                <i className="pull-right fa fa-trash"></i>
-              </li>
-              <li className="list-group-item">
-                Module 7
-                <i className="pull-right fa fa-trash"></i>
-              </li>
-            </ul>
-            <a className="nav-link" tabIndex="-1" href="#" aria-disabled="true">
-              <i className="pull-right add-module fa fa-plus"></i>
-            </a>
+const CourseEditor = ({history}) => {
+  const {courseId, layout} = useParams();
+  const [courseTitle, setCourseTitle] = useState('');
+  useEffect(() => getTitle(courseId));
 
-          </div>
-          <div className="col-8">
-            <ul className="nav nav-tabs">
-              <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#">
-                  Build
-                  <i className="pull-right fa fa-trash"></i>
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Pages</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Theme</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Store</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Apps</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Settings</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#" tabIndex="-1"
-                   aria-disabled="true">
-                  <i className="fa fa-plus"></i>
-                </a>
-              </li>
-            </ul>
+  const getTitle = (courseId) => {
+    courseService.findCourseById(courseId).then(course => setCourseTitle(course.title));
+  }
 
-            <br/>
-
-            <ul className="nav nav-pills">
-              <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#">Topic
-                  1</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Topic 2</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Topic 3</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Topic 4</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#" tabIndex="-1"
-                   aria-disabled="true">
-                  <i className="fa fa-plus"></i>
-                </a>
-              </li>
-            </ul>
-
-
+  return (
+      <Provider store={store}>
+        <div>
+          <h2>
+            <Link to={`/courses/${layout}`}>
+              <i className="fas fa-times"></i>
+            </Link>
+            {courseTitle}
+            <i onClick={() => history.goBack()}
+               className="fas fa-times float-right"></i>
+            {/*<i onClick={() => props.history.goBack()}*/}
+            {/*   className="fas fa-times float-right"></i>*/}
+          </h2>
+          <div className="row">
+            <div className="col-4">
+              <ModuleList/>
+            </div>
+            <div className="col-8">
+              <LessonTabs/>
+              <br/>
+              <TopicPills/>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </Provider>)}
 
 export default CourseEditor

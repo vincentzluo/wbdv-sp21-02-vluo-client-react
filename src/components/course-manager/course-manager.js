@@ -57,26 +57,6 @@ class CourseManager extends React.Component {
   deleteCourse = (courseToDelete) => {
     courseService.deleteCourse(courseToDelete._id)
     .then(status => {
-      // const newCourses = this.state.courses
-      //     .filter(course => course !== courseToDelete)
-      // this.setState({
-      //   courses: newCourses
-      // })
-      // this.setState((prevState) => {
-      //   // let nextState = {...prevState}
-      //   // nextState.courses =
-      //   //     prevState
-      //   //         .courses
-      //   //         .filter(course => course !== courseToDelete)
-      //
-      //   let nextState = {
-      //     ...prevState,
-      //     courses: prevState.courses.filter
-      //               (course => course !== courseToDelete)
-      //   }
-      //
-      //   return nextState
-      // })
 
       this.setState((prevState) => ({
         ...prevState,
@@ -93,7 +73,7 @@ class CourseManager extends React.Component {
   render() {
     return(
         <div>
-          <Route path="/courses/table">
+          <Route path="/courses/table" exact={true}>
             <TopBar addCourse={this.addCourse} setName={this.setName} courseName={this.state.courseName}/>
             <CourseTable
                 updateCourse={this.updateCourse}
@@ -103,7 +83,7 @@ class CourseManager extends React.Component {
               <i className="fa fa-plus fa-2x" onClick={this.addCourse}></i>
             </div>
           </Route>
-          <Route path="/courses/grid">
+          <Route path="/courses/grid" exact={true}>
             <TopBar addCourse={this.addCourse} setName={this.setName} courseName={this.state.courseName}/>
             <CourseGrid
                 updateCourse={this.updateCourse}
@@ -113,7 +93,13 @@ class CourseManager extends React.Component {
               <i className="fa fa-plus fa-2x" onClick={this.addCourse}></i>
             </div>
           </Route>
-          <Route path="/courses/editor"
+          <Route path={[
+               "/courses/:layout/edit/:courseId",
+              "/courses/:layout/edit/:courseId/modules/:moduleId",
+             "/courses/:layout/edit/:courseId/modules/:moduleId/lessons/:lessonId",
+              "/courses/:layout/edit/:courseId/modules/:moduleId/lessons/:lessonId/topics/:topicId"
+          ]}
+                 exact={true}
                  render={(props) => <CourseEditor {...props}/>}>
           </Route>
         </div>
