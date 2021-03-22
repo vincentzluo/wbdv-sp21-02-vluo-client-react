@@ -18,7 +18,6 @@ const TopicPills = (
   }, [moduleId, lessonId])
   return (
       <div>
-        <h2>Topics</h2>
         <ul className="nav nav-pills">
           {
             topics.map(topic =>
@@ -35,7 +34,7 @@ const TopicPills = (
             )
           }
           <li>
-            <i onClick={() => createTopic(topicId)}
+            <i onClick={() => createTopic(lessonId)}
                className="fas fa-plus"></i>
           </li>
         </ul>
